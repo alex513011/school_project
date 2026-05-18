@@ -41,6 +41,15 @@ function getDDay(targetDateStr) {
     return `D-${diffDays}`;
 }
 
+// Safe Lucide Icon replace to prevent crashes during asynchronous CDNs load
+function safeLucideReplace() {
+    if (typeof lucide !== 'undefined' && typeof lucide.replace === 'function') {
+        lucide.replace();
+    } else {
+        console.warn('Lucide icon library not loaded yet. Icons will be loaded automatically once ready.');
+    }
+}
+
 // Generate premium initial mock data if localStorage is empty
 function initializeMockData() {
     const today = new Date();
@@ -561,7 +570,7 @@ function renderHome() {
         `;
     }
     
-    lucide.replace();
+    safeLucideReplace();
 }
 
 // ==========================================================================
@@ -639,7 +648,7 @@ function renderTimetable() {
         tbody.appendChild(row);
     });
 
-    lucide.replace();
+    safeLucideReplace();
 }
 
 // Modal Form class registers
@@ -677,7 +686,7 @@ function openClassRegistration(day, period) {
 
     renderColorSelectors(existing ? existing.color : '#5B8DEF');
     modal.classList.add('active');
-    lucide.replace();
+    safeLucideReplace();
 }
 
 function renderColorSelectors(activeColor) {
@@ -755,7 +764,7 @@ function renderSchedulesList() {
             </div>
         `;
     }
-    lucide.replace();
+    safeLucideReplace();
 }
 
 function deleteSchedule(id) {
@@ -842,7 +851,7 @@ function renderHomeworkList() {
             </div>
         `;
     }
-    lucide.replace();
+    safeLucideReplace();
 }
 
 function toggleHomeworkStatus(id) {
@@ -915,7 +924,7 @@ function renderNotifLogs() {
             </div>
         `;
     }
-    lucide.replace();
+    safeLucideReplace();
 }
 
 // ==========================================================================
@@ -953,7 +962,7 @@ function showToast(title, desc, type = 'info', duration = 4000) {
     });
 
     container.appendChild(toast);
-    lucide.replace();
+    safeLucideReplace();
 
     // Auto dismiss
     setTimeout(() => {
@@ -1283,3 +1292,8 @@ if (document.readyState === 'loading') {
 } else {
     initializeApp();
 }
+
+// Fallback window loader to ensure Lucide replace resolves even if CDN responds slowly
+window.addEventListener('load', () => {
+    setTimeout(safeLucideReplace, 150);
+});
